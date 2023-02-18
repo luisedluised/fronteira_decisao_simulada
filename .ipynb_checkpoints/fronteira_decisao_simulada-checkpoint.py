@@ -14,12 +14,12 @@ warnings.filterwarnings('ignore')
 import random
 
 def visualizar_classificacao(n, N, precisao, recall, ruido = 'automatico', distribuicao = 'normal',
-                             expoentes = 'automatico', printar_info = False, skewness = 'media'):
+                             expoentes = 'automatico', printar_info = False, skewness = 'media', figsize = (15, 8)):
     tentativas_por_coef = 40
     n_coefs_tentados = 100
 
     if type(ruido) not in (int, float):
-        ruido = 0.15*((1/precisao))
+        ruido = 0.15*((1/precisao))/(1+(2*recall)**2)
         
     if skewness == 'alta':
         skewness, e0 = 2, 1
@@ -56,7 +56,7 @@ def visualizar_classificacao(n, N, precisao, recall, ruido = 'automatico', distr
     pontos_classificados = emular_classificacao(recall, precisao, a, b, ruido,tipo_fronteira, pontos, n)
 
 
-    _,f = plt.subplots(figsize = (15, 8))
+    _,f = plt.subplots(figsize = figsize)
 
     (x1, x2) = (-100, 100)
     y1 = a*x1 + b
@@ -98,6 +98,9 @@ def visualizar_classificacao(n, N, precisao, recall, ruido = 'automatico', distr
     TP = pontos_classificados[pontos_classificados.classificado == True][pontos_classificados.target == 1].shape[0]
     C =  pontos_classificados[pontos_classificados.classificado == True].shape[0]
     precisao_calculada = TP/C
+    
+    if printar_info == True:
+        print(round(recall_calculado, 2), round(precisao_calculada,2), 'recall, precisao')
 
     
 
